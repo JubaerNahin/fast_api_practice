@@ -1,3 +1,4 @@
+from enum import Enum
 from fastapi import Body
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -15,11 +16,25 @@ item1 = Item(
     is_offer = True
 )
 
-# hello : int
+# So basically what this enum does is it restrics to select only the fixed allowed value
+# from the list given to it 
+class ModelName(str, Enum):
+    alexnet = "alexnet"
+    resnet = "resnet"
+    lenet = "lenet"
 
-@app.put("/")
-def read_root(hello : int):
-    return hello
+@app.get("/models/{model_name}")
+def read_model_name(model_name : ModelName):
+    if model_name is ModelName.alexnet:
+        return {"model_name": model_name , "message" : "This is alexnet"}
+    if model_name.value == "resnet":
+        return {"model_name" : model_name , "message": "This is Resnet "}
+    return {"model_name" : model_name ,  "message" : "This is lenet"}
+
+
+@app.put("/{id}")
+def read_root(id : int ,hello : str):
+    return { "hello" : hello , "id" : id }
 
 @app.get("/getItem")
 def getItem():
